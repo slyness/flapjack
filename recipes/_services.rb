@@ -36,12 +36,10 @@ end
 
 node['flapjack']['services'].each do |service|
   runit_service service do
-    options lazy {
-      {
-        :user => node['flapjack']['user'],
-        :ruby_bin_dir => node['flapjack']['ruby_bin_dir'] || node['languages']['ruby']['bin_dir']
-      }
-    }
+    options({
+      :user => node['flapjack']['user'],
+      :ruby_bin_dir => node['flapjack']['ruby_bin_dir'] || node['languages']['ruby']['bin_dir']
+    }.merge(params))
     subscribes :restart, 'file[/etc/flapjack/flapjack_config.yaml]'
     notifies :run, 'ruby_block[flapjack_service_wait]', :immediately
   end
